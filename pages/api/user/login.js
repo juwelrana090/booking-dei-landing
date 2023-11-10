@@ -14,10 +14,6 @@ export default async function UserLogin(request, response) {
             const body = request.body;
             const { email, password } = body;
 
-            if (!email || !password) {
-                return response.status(422).json({ status: false, error: "please ass all the fields" })
-            }
-
             const user = await prisma.user.findUnique({
                 where: {
                     email: email
