@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from "next/router";
 import Icon from '@mui/material/Icon';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -15,7 +16,18 @@ import Title from '../Title/TitleSecondary';
 import AuthFrame from './AuthFrame';
 import useStyles from './form-style';
 
+import cookie from "js-cookie";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { baseUrl } from '../../config/appConfig'
+
 function Login() {
+
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
+
   const { classes, cx } = useStyles();
   const { classes: text } = useText();
   const theme = useTheme();
@@ -48,12 +60,49 @@ function Login() {
     setCheck(event.target.checked);
   };
 
-  const handleSubmit = () => {
-    console.log('data submited');
+  const handleSubmit = async () => {
+    setLoading(true);
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      email: values.email,
+      password: values.password
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    try {
+      const login = await fetch(`${baseUrl}/api/user/login`, requestOptions);
+      const result = await login.json();
+
+      if (result.status == true) {
+        toast.success(result.message);
+        
+        cookie.set("token", result?.token);
+        cookie.set("user", JSON.stringify(result?.user));
+
+        setTimeout(() => {
+          router.push("/en");
+        }, 3000);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <AuthFrame title={t('login_title')} subtitle={t('login_subtitle')}>
+      <ToastContainer />
       <div>
         <div className={classes.head}>
           <Title align={isMobile ? 'center' : 'left'}>
@@ -122,7 +171,7 @@ function Login() {
             </Button>
           </div>
           <div className={classes.btnArea}>
-            <Button variant="contained" fullWidth type="submit" color="secondary" size="large">
+            <Button variant="contained" fullWidth type="submit" color="secondary" size="large" disabled={loading} loading={loading}>
               {t('continue')}
             </Button>
           </div>

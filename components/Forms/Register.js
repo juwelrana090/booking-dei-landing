@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from "next/router";
 import Button from '@mui/material/Button';
 import Icon from '@mui/material/Icon';
 import Typography from '@mui/material/Typography';
@@ -15,7 +16,16 @@ import Title from '../Title/TitleSecondary';
 import AuthFrame from './AuthFrame';
 import useStyles from './form-style';
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { baseUrl } from '../../config/appConfig'
+
 function Register() {
+
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
   const { classes, cx } = useStyles();
   const { classes: text } = useText();
   const theme = useTheme();
@@ -51,12 +61,46 @@ function Register() {
     setCheck(event.target.checked);
   };
 
-  const handleSubmit = () => {
-    console.log('data submited');
+  const handleSubmit = async () => {
+    setLoading(true);
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      name: values.name,
+      email: values.email,
+      password: values.password
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    try {
+      const register = await fetch(`${baseUrl}/api/user/register`, requestOptions);
+      const result = await register.json();
+
+      if (result.status == true) {
+        toast.success(result.message);
+        setTimeout(() => {
+          router.push("/en/login");
+        }, 3000);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <AuthFrame title={t('register_title')} subtitle={t('register_subtitle')}>
+      <ToastContainer />
       <div>
         <div className={classes.head}>
           <Title align={isMobile ? 'center' : 'left'}>{t('register')}</Title>
@@ -146,7 +190,7 @@ function Register() {
                 </span>
               )}
             />
-            <Button variant="contained" type="submit" color="secondary" size="large">
+            <Button variant="contained" type="submit" color="secondary" size="large" disabled={loading} loading={loading}>
               {t('continue')}
             </Button>
           </div>

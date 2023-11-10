@@ -7,7 +7,7 @@ const prisma = new PrismaClient()
 
 export default async function UserLogin(request, response) {
 
-    const JWTSECRET = process.env.JWT_SECRET
+    const JWT_SECRET = process.env.JWT_SECRET
 
     if (request.method === "POST") {
         try {
@@ -23,30 +23,36 @@ export default async function UserLogin(request, response) {
             // console.log('user :', user);
 
             if (!user) {
-                return response.status(404).json({ status: false, message: "Login details don't match" })
+                return response.status(404).json({
+                    status: false,
+                    message: "Login details don't match"
+                })
             }
 
             const doMatch = await bcrypt.compare(password, user.password);
 
             if (doMatch) {
-                const token = jwt.sign({ userId: user._id }, JWTSECRET, {
+                const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
                     expiresIn: "30d",
                 })
 
                 if (!doMatch) {
-                    return response.status(401).json({ status: false, error: "Login details don't match" })
+                    return response.status(401).json({
+                        status: false,
+                        message: "Login details don't match"
+                    })
                 }
 
-                const { _id, name, email } = user;
+                const { id, name, email } = user;
 
                 response.status(201).json({
                     status: true,
                     token,
-                    user: { _id, name, email },
-                    message: "login successful",
+                    user: { id, name, email },
+                    message: "login successfully",
                 })
             } else {
-                return response.status(404).json({ status: false, error: "Login details don't match" })
+                return response.status(404).json({ status: false, message: "Login details don't match" })
             }
 
         } catch (err) {
