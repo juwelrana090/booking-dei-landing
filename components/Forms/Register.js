@@ -19,7 +19,7 @@ import useStyles from './form-style';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { baseUrl } from '../../config/appConfig'
+import { baseUrl } from '~/config/appConfig'
 
 function Register() {
 

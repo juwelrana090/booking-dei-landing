@@ -22,7 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { baseUrl } from '~/config/appConfig'
 
-function Login() {
+function ForgetPassword() {
 
   const router = useRouter();
 
@@ -38,17 +38,8 @@ function Login() {
 
   const [values, setValues] = useState({
     email: '',
-    password: '',
   });
 
-  useEffect(() => {
-    ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
-      if (value !== values.password) {
-        return false;
-      }
-      return true;
-    });
-  });
 
   const [check, setCheck] = useState(false);
 
@@ -67,7 +58,6 @@ function Login() {
 
     var raw = JSON.stringify({
       email: values.email,
-      password: values.password
     });
 
     var requestOptions = {
@@ -78,15 +68,11 @@ function Login() {
     };
 
     try {
-      const login = await fetch(`${baseUrl}/api/user/login`, requestOptions);
-      const result = await login.json();
+      const forgetPassword = await fetch(`${baseUrl}/api/user/forget-password`, requestOptions);
+      const result = await forgetPassword.json();
 
       if (result.status == true) {
         toast.success(result.message);
-        
-        cookie.set("token", result?.token);
-        cookie.set("user", JSON.stringify(result?.user));
-
         setTimeout(() => {
           router.push("/en");
         }, 3000);
@@ -101,21 +87,21 @@ function Login() {
   };
 
   return (
-    <AuthFrame title={t('login_title')} subtitle={t('login_subtitle')}>
+    <AuthFrame title={`Can't remember password`} subtitle={`Forget your password`}>
       <ToastContainer />
       <div>
         <div className={classes.head}>
           <Title align={isMobile ? 'center' : 'left'}>
             {t('login')}
           </Title>
-          <Button size="small" className={classes.buttonLink} href={curLang + routeLink.saas.register}>
+          <Button size="small" className={classes.buttonLink} href={curLang + routeLink.saas.login}>
             <Icon className={cx(classes.icon, classes.signArrow)}>arrow_forward</Icon>
-            {t('login_create')}
+            {t('register_already')}
           </Button>
         </div>
         <div className={classes.separator}>
           <Typography>
-            {t('login_or')}
+            Forget Password
           </Typography>
         </div>
         <ValidatorForm
@@ -135,41 +121,7 @@ function Login() {
                 errorMessages={['This field is required', 'Email is not valid']}
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextValidator
-                variant="filled"
-                type="password"
-                className={classes.input}
-                label={t('login_password')}
-                validators={['required']}
-                onChange={handleChange('password')}
-                errorMessages={['This field is required']}
-                name="password"
-                value={values.password}
-              />
-            </Grid>
           </Grid>
-          <div className={classes.formHelper}>
-            <FormControlLabel
-              control={(
-                <Checkbox
-                  checked={check}
-                  onChange={(e) => handleCheck(e)}
-                  color="secondary"
-                  value={check}
-                  className={classes.check}
-                />
-              )}
-              label={(
-                <span className={text.caption}>
-                  {t('login_remember')}
-                </span>
-              )}
-            />
-            <Button size="small" className={classes.buttonLink} href={curLang + routeLink.saas.ForgetPassword}>
-              {t('login_forgot')}
-            </Button>
-          </div>
           <div className={classes.btnArea}>
             <Button variant="contained" fullWidth type="submit" color="secondary" size="large" disabled={loading} loading={loading}>
               {t('continue')}
@@ -181,4 +133,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default ForgetPassword;

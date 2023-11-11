@@ -10,16 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  email    String @unique
-  name     String
-  password String
+model user {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String
+  password  String
 }
 
-model PasswordResets {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  email      String
+model password_resets {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  email      String   @unique
   token      String
-  expiration String
+  expiration Int
+  status     Boolean
 }
