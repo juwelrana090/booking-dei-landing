@@ -16,6 +16,7 @@ import Title from '../Title/TitleSecondary';
 import AuthFrame from './AuthFrame';
 import useStyles from './form-style';
 
+import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -63,39 +64,52 @@ function Register() {
 
   const handleSubmit = async () => {
     setLoading(true);
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
 
-    var raw = JSON.stringify({
+    let data = JSON.stringify({
       name: values.name,
       email: values.email,
       password: values.password
     });
 
-    var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow'
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${baseUrl}/api/user/register`,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
     };
 
-    try {
-      const register = await fetch(`${baseUrl}/api/user/register`, requestOptions);
-      const result = await register.json();
+    axios.request(config)
+      .then((response) => {
+        // console.log(JSON.stringify(response.data));
+        const result = JSON.stringify(response.data)
+        if (result.status == true) {
+          toast.success(result.message);
+          setTimeout(() => {
+            router.push("/en/login");
+          }, 3000);
+        } else {
+          toast.error(result.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
-      if (result.status == true) {
-        toast.success(result.message);
-        setTimeout(() => {
-          router.push("/en/login");
-        }, 3000);
-      } else {
-        toast.error(result.message);
-      }
-    } catch (err) {
-      console.log(err)
-    } finally {
-      setLoading(false);
-    }
+    setLoading(false);
+
+    // try {
+    //   const register = await fetch(`${baseUrl}/api/user/register`, requestOptions);
+    //   const result = await register.json();
+
+
+    // } catch (err) {
+    //   console.log(err)
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (

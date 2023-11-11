@@ -17,7 +17,7 @@ import { useText } from '~/theme/common';
 import Title from '../Title/TitleSecondary';
 import AuthFrame from './AuthFrame';
 import useStyles from './form-style';
-
+import axios from 'axios';
 import cookie from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
