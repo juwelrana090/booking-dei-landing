@@ -15,8 +15,6 @@ import Checkbox from './Checkbox';
 import Title from '../Title/TitleSecondary';
 import AuthFrame from './AuthFrame';
 import useStyles from './form-style';
-
-import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -64,52 +62,39 @@ function Register() {
 
   const handleSubmit = async () => {
     setLoading(true);
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-    let data = JSON.stringify({
+    var raw = JSON.stringify({
       name: values.name,
       email: values.email,
       password: values.password
     });
 
-    let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: `${baseUrl}/api/user/register`,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: data
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
     };
 
-    axios.request(config)
-      .then((response) => {
-        // console.log(JSON.stringify(response.data));
-        const result = JSON.stringify(response.data)
-        if (result.status == true) {
-          toast.success(result.message);
-          setTimeout(() => {
-            router.push("/en/login");
-          }, 3000);
-        } else {
-          toast.error(result.message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    try {
+      const register = await fetch(`${baseUrl}/api/user/register`, requestOptions);
+      const result = await register.json();
 
-    setLoading(false);
-
-    // try {
-    //   const register = await fetch(`${baseUrl}/api/user/register`, requestOptions);
-    //   const result = await register.json();
-
-
-    // } catch (err) {
-    //   console.log(err)
-    // } finally {
-    //   setLoading(false);
-    // }
+      if (result.status == true) {
+        toast.success(result.message);
+        setTimeout(() => {
+          router.push("/en/login");
+        }, 3000);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
