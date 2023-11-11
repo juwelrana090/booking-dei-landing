@@ -11,7 +11,6 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 module.exports = withImages({
   // Enable this code below for Server Side Rendering/Translation (SSR)
   //  i18n,
-  target: "serverless",
   trailingSlash: true,
   images: {
     disableStaticImages: true
