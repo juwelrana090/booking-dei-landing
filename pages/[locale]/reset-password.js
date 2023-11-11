@@ -7,27 +7,20 @@ import { getStaticPaths, makeStaticProps } from '~/lib/getStatic';
 import brand from '~/public/text/brand';
 import ResetPassword from '~/components/Forms/ResetPassword';
 
-function ResetPasswordPage({ query }) {
-
-  const { token_id } = query;
+function ResetPasswordPage() {
   return (
     <Fragment>
       <Head>
         <title>
-          {brand.saas.name + ' - Forget Password'}
+          {brand.saas.name + ' - Reset Password'}
         </title>
       </Head>
       <div>
-        <ResetPassword token_id={token_id} />
+        <ResetPassword />
       </div>
     </Fragment>
   );
 }
-
-
-ResetPasswordPage.getInitialProps = ({ query }) => {
-  return { query };
-};
 
 
 // Use this below for Server Side Render/Translation (SSR)

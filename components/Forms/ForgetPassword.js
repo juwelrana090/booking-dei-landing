@@ -92,7 +92,7 @@ function ForgetPassword() {
       <div>
         <div className={classes.head}>
           <Title align={isMobile ? 'center' : 'left'}>
-            {t('login')}
+            Forget Password
           </Title>
           <Button size="small" className={classes.buttonLink} href={curLang + routeLink.saas.login}>
             <Icon className={cx(classes.icon, classes.signArrow)}>arrow_forward</Icon>

@@ -40,7 +40,7 @@ export default async function UserForgetPassword(request, response) {
                     })
                 }
 
-                const token = jwt.sign({ id: user.id }, JWT_SECRET, {
+                const token = jwt.sign({ user_id: user.id }, JWT_SECRET, {
                     expiresIn: '5m',
                 })
 
@@ -65,7 +65,7 @@ export default async function UserForgetPassword(request, response) {
                 // console.log('newToken', newToken);
 
                 const { origin } = absoluteUrl(request);
-                const link = `${origin}/reset-password/${newToken.id}`;
+                const link = `${origin}/reset-password/?token=${token}`;
 
                 const message = `<div>Click on the link below to reset your password, if the link is not working then please paste into the browser.</div></br>
                 <div><a href=${link}>Reset Now</a></div>`;
