@@ -67,7 +67,7 @@ export default async function UserForgetPassword(request, response) {
                 const { origin } = absoluteUrl(request);
                 const link = `${origin}/reset-password/?token=${token}`;
 
-                const message = `<div>Click on the link below to reset your password, if the link is not working then please paste into the browser.</div></br>
+                const message = `<div>Click on the link below to reset your password, this link expired after 5 minutes.</div></br>
                 <div><a href=${link}>Reset Now</a></div>`;
 
                 await sendEmail({
