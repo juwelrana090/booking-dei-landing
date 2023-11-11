@@ -44,5 +44,4 @@ export default async function UserForgetPassword(request, response) {
     } else {
         response.status(405).json({ message: "Method not allowed" })
     }
-
 }
